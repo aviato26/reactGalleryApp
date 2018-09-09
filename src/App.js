@@ -29,14 +29,20 @@ class App extends Component {
     .catch(err => console.log(err))
   }
 
+  searchRoute = ({match}) => {
+    this.searchQuery(match.params.q);
+    return true
+  }
+
   render() {
     return (
       <BrowserRouter>
-      <div className="App">
-          <Search searchFn={this.searchQuery}/>
-          <Nav clickLinks={this.searchQuery}/>
-          <Gallery data={this.state.pics}/>
-      </div>
+        <div className="App">
+            <Search searchFn={this.searchQuery}/>
+            <Nav clickLinks={this.searchQuery}/>
+            <Gallery data={this.state.pics}/>
+            <Route path='/search/:q' render={this.searchRoute} />
+        </div>
       </BrowserRouter>
     );
   }
