@@ -3,7 +3,8 @@ import './index.css';
 import Search from './components/search';
 import Nav from './components/nav';
 import Gallery from './components/photocontainer';
-import { Config } from './config.js';
+import apiKey from './config.js';
+import {BrowserRouter, Route} from 'react-router-dom'
 
 class App extends Component {
   constructor(props){
@@ -14,7 +15,11 @@ class App extends Component {
   }
 
   componentDidMount(){
-    fetch(`https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=${Config.key}&tags=cats+dogs&format=json&nojsoncallback=1`)
+    this.searchQuery()
+  }
+
+  searchQuery = (data = 'cats,dogs,birds') => {
+    fetch(`https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=${apiKey}&tags=${data}&format=json&nojsoncallback=1&per_page=24`)
     .then(res => res.json())
     .then(data => {
       this.setState({
@@ -26,11 +31,13 @@ class App extends Component {
 
   render() {
     return (
+      <BrowserRouter>
       <div className="App">
-          <Search />
-          <Nav />
-          <Gallery data={this.state.pics[0]}/>
+          <Search searchFn={this.searchQuery}/>
+          <Nav clickLinks={this.searchQuery}/>
+          <Gallery data={this.state.pics}/>
       </div>
+      </BrowserRouter>
     );
   }
 }
